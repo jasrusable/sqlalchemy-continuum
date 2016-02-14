@@ -16,22 +16,18 @@ class ManyToManyRelationshipsTestCase(TestCase):
             id = sa.Column(sa.Integer, autoincrement=True, primary_key=True)
             name = sa.Column(sa.Unicode(255))
 
-        article_tag = sa.Table(
-            'article_tag',
-            self.Model.metadata,
-            sa.Column(
-                'article_id',
+        class ArticleTag(self.Model):
+            __tablename__ = 'article_tag'
+            article_id = sa.Column(
                 sa.Integer,
                 sa.ForeignKey('article.id'),
                 primary_key=True,
-            ),
-            sa.Column(
-                'tag_id',
+            )
+            tag_id = sa.Column(
                 sa.Integer,
                 sa.ForeignKey('tag.id'),
-                primary_key=True
+                primary_key=True,
             )
-        )
 
         class Tag(self.Model):
             __tablename__ = 'tag'
@@ -44,7 +40,7 @@ class ManyToManyRelationshipsTestCase(TestCase):
 
         Tag.articles = sa.orm.relationship(
             Article,
-            secondary=article_tag,
+            secondary='article_tag',
             backref='tags'
         )
 
@@ -245,7 +241,7 @@ class TestManyToManyRelationshipWithViewOnly(TestCase):
 
 
 class TestManyToManySelfReferential(TestCase):
-    
+
     def create_models(self):
         class Article(self.Model):
             __tablename__ = 'article'
@@ -296,8 +292,8 @@ class TestManyToManySelfReferential(TestCase):
 
         assert len(reference1.versions[0].cited_by) == 1
         assert article.versions[0] in reference1.versions[0].cited_by
-        
-        
+
+
     def test_multiple_inserts_over_multiple_transactions(self):
         if (
             self.driver == 'mysql' and
