@@ -20,19 +20,21 @@ class ManyToManyRelationshipsTestCase(TestCase):
             'article_tag',
             self.Model.metadata,
             sa.Column(
-                'id',
-                sa.Integer,
-                primary_key=True,
-            ),
-            sa.Column(
                 'article_id',
                 sa.Integer,
                 sa.ForeignKey('article.id'),
+                primary_key=True,
             ),
             sa.Column(
                 'tag_id',
                 sa.Integer,
                 sa.ForeignKey('tag.id'),
+                primary_key=True,
+            ),
+            sa.Column(
+                'other_thing',
+                sa.Integer,
+                nullable=False,
             )
         )
 
